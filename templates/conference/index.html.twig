@@ -1,28 +1,13 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Bienvenue sur Guestbook{% endblock %}
+{% block title %}Conference Guestbook{% endblock %}
 
 {% block body %}
-<div class="container mx-auto px-4 py-8">
-    <header class="text-center mb-12">
-        <h1 class="text-4xl font-bold text-gray-900 mb-4">Bienvenue sur notre Livre d'Or</h1>
-        <p class="text-xl text-gray-600">Partagez vos impressions et vos commentaires</p>
-    </header>
-
-    <div class="max-w-2xl mx-auto bg-white rounded-lg shadow-md p-8">
-        <div class="prose lg:prose-xl">
-            <p class="text-gray-700 mb-6">
-                Notre livre d'or est un espace où vous pouvez partager vos expériences, 
-                suggestions et commentaires. Nous apprécions vos retours !
-            </p>
-            
-            <div class="mt-8 flex justify-center">
-                <a href="#" 
-                   class="inline-block bg-indigo-600 text-white px-6 py-3 rounded-md hover:bg-indigo-700 transition-colors duration-300 text-lg font-semibold">
-                    Laissez un message
-                </a>
-            </div>
-        </div>
-    </div>
-</div>
+  <h2>Give your feedback!</h2>
+  {% for conference in conferences %}
+      <h4>{{ conference }}</h4>
+      <p>
+          <a href="{{ path('conference', { id: conference.id }) }}">View</a>
+      </p>
+  {% endfor %}
 {% endblock %}
