@@ -13,19 +13,57 @@
             {% block importmap %}{{ importmap('app') }}{% endblock %}
         {% endblock %}
     </head>
-    <body>
+    <body class="min-h-screen bg-gray-100">
         <header>
-            <h1><a href="{{ path('homepage') }}">Guestbook</a></h1>
-            <a href="{{ path('homepage') }}" class="text-white no-underline hover:text-gray-200 px-3 py-2">Home</a>
-            <a href="{{ path('admin') }}" class="text-white no-underline hover:text-gray-200 px-3 py-2">Admin</a>
-            <a href="{{ path('app_product') }}" class="text-white no-underline hover:text-gray-200 px-3 py-2">Products</a>
-            <ul>
-            {% for conference in conferences %}
-                <li><a href="{{ path('conference', { id: conference.id }) }}">{{ conference }}</a></li>
-            {% endfor %}
-            </ul>
-            <hr />
+            <nav class="bg-indigo-600 shadow-lg">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div class="flex items-center justify-between h-16">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <a href="{{ path('homepage') }}" class="text-white font-bold text-xl hover:text-indigo-200 transition-colors duration-200">
+                                    Guestbook
+                                </a>
+                            </div>
+                            <div class="hidden md:block">
+                                <div class="ml-10 flex items-baseline space-x-4">
+                                    <a href="{{ path('homepage') }}" 
+                                       class="text-white hover:bg-indigo-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                                        Home
+                                    </a>
+                                    <a href="{{ path('app_product') }}" 
+                                       class="text-white hover:bg-indigo-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                                        Products
+                                    </a>
+                                    <a href="{{ path('admin') }}" 
+                                       class="text-white hover:bg-indigo-500 px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200">
+                                        Admin
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            {% if conferences is defined and conferences|length > 0 %}
+                <div class="bg-white shadow-sm">
+                    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+                        <div class="flex items-center space-x-4 overflow-x-auto">
+                            <span class="text-gray-500 font-medium whitespace-nowrap">Conferences:</span>
+                            {% for conference in conferences %}
+                                <a href="{{ path('conference', { slug: conference.slug }) }}"
+                                   class="text-indigo-600 hover:text-indigo-900 font-medium text-sm whitespace-nowrap transition-colors duration-200">
+                                    {{ conference }}
+                                </a>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            {% endif %}
         </header>
-        {% block body %}{% endblock %}
+
+        <main class="py-10">
+            {% block body %}{% endblock %}
+        </main>
     </body>
 </html>

@@ -46,17 +46,13 @@ class CommentCrudController extends AbstractCrudController
             ->hideOnIndex();
         yield TextField::new('photoFilename')
             ->onlyOnIndex();
-        $createdAt = DateTimeField::new('createdAt')
+        yield DateTimeField::new('createdAt')
+            ->setRequired(false)
+            ->setTimezone('Europe/Paris')
             ->setFormTypeOptions([
                 'html5' => true,
                 'years' => range(date('Y'), date('Y') + 5),
                 'widget' => 'single_text',
-            ]);
-
-        if (Crud::PAGE_EDIT === $pageName) {
-            yield $createdAt->setFormTypeOption('disabled', true);
-        } else {
-            yield $createdAt;
-        }
+            ])->onlyOnIndex();
     }
 }
