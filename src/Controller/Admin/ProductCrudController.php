@@ -7,6 +7,7 @@ use EasyCorp\Bundle\EasyAdminBundle\Field\IdField;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\MoneyField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
 use Symfony\Component\Form\Extension\Core\Type\MoneyType;
@@ -36,5 +37,11 @@ class ProductCrudController extends AbstractCrudController
             ->setStoredAsCents(false);
         yield TextareaField::new('description')
             ->hideOnIndex();
+        yield DateTimeField::new('createdAt')
+            ->setRequired(false)
+            ->setTimezone('Europe/Paris')->onlyOnIndex();
+        yield DateTimeField::new('updatedAt')
+            ->setRequired(false)
+            ->setTimezone('Europe/Paris')->onlyOnIndex();
     }
 }

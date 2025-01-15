@@ -40,7 +40,7 @@ class CommentCrudController extends AbstractCrudController
     public function configureFields(string $pageName): iterable
     {
         yield AssociationField::new('conference');
-        yield TextField::new('author');
+        yield TextField::new('author')->setHtmlAttributes(['maxlength' => 20]);
         yield EmailField::new('email');
         yield TextareaField::new('text')
             ->hideOnIndex();
@@ -48,11 +48,9 @@ class CommentCrudController extends AbstractCrudController
             ->onlyOnIndex();
         yield DateTimeField::new('createdAt')
             ->setRequired(false)
-            ->setTimezone('Europe/Paris')
-            ->setFormTypeOptions([
-                'html5' => true,
-                'years' => range(date('Y'), date('Y') + 5),
-                'widget' => 'single_text',
-            ])->onlyOnIndex();
+            ->setTimezone('Europe/Paris')->onlyOnIndex();
+        yield DateTimeField::new('updatedAt')
+            ->setRequired(false)
+            ->setTimezone('Europe/Paris')->onlyOnIndex();
     }
 }
