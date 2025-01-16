@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use App\SpamChecker;
 use Twig\Environment;
 use App\Entity\Comment;
 use App\Entity\Conference;
@@ -35,7 +36,8 @@ class ConferenceController extends AbstractController
         CommentRepository $commentRepository,
         ConferenceRepository $conferenceRepository,
         #[Autowire('%photo_dir%')]
-        string $photoDir
+        string $photoDir,
+        SpamChecker $spamChecker
     ): Response
     {
         $conference = $conferenceRepository->findOneBy(['slug' => $slug]);
@@ -57,6 +59,18 @@ class ConferenceController extends AbstractController
             }
 
             $this->entityManager->persist($comment);
+
+            $context = [
+                'user_ip' => $request->getClientIp(),
+                'user_agent' => $request->headers->get('user-agent'),
+                'referrer' => $request->headers->get('referer'),
+                'permalink' => $request->getUri(),
+            ];
+
+            if (2 === $spamChecker->getSpamScore($comment, $context)) {
+                throw new \RuntimeException('Blatant spam, go away!');
+            }
+        
             $this->entityManager->flush();
 
             return $this->redirectToRoute('conference', ['slug' => $conference->getSlug()]);
