@@ -2,14 +2,13 @@
 
 namespace App\Tests;
 
-use App\SpamChecker;
-use RuntimeException;
 use App\Entity\Comment;
-use PHPUnit\Framework\TestCase;
+use App\SpamChecker;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpClient\MockHttpClient;
-use Symfony\Contracts\HttpClient\ResponseInterface;
 use Symfony\Component\HttpClient\Response\MockResponse;
+use Symfony\Contracts\HttpClient\ResponseInterface;
 
 class SpamCheckerTest extends TestCase
 {
@@ -19,10 +18,10 @@ class SpamCheckerTest extends TestCase
 
         $client = new MockHttpClient([new MockResponse('invalid', ['response_headers' => ['x-akismet-debug-help: Invalid key']])]);
         $checker = new SpamChecker($client, 'abcde');
-        
+
         static::expectException(\RuntimeException::class);
         static::expectExceptionMessage('Unable to check for spam: invalid (Invalid key).');
-        
+
         $checker->getSpamScore(comment: $comment, context: []);
     }
 
@@ -35,19 +34,19 @@ class SpamCheckerTest extends TestCase
         static::assertSame($expectedScore, $score);
     }
 
-    /** 
-     * @return iterable<string, array<mixed>> 
+    /**
+     * @return iterable<string, array<mixed>>
      **/
     public static function provideComments(): iterable
     {
         ($comment = new Comment())->setCreatedAtValue();
-        
+
         $response = new MockResponse('', ['response_headers' => ['x-akismet-pro-tip: discard']]);
         yield 'blatant_spam' => [2, $response, $comment, []];
-        
+
         $response = new MockResponse('true');
         yield 'spam' => [1, $response, $comment, []];
-        
+
         $response = new MockResponse('false');
         yield 'ham' => [0, $response, $comment, []];
     }

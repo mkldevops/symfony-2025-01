@@ -5,15 +5,15 @@ namespace App\Controller\Admin;
 use App\Entity\Comment;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Crud;
 use EasyCorp\Bundle\EasyAdminBundle\Config\Filters;
-use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
+use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\EmailField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\ImageField;
-use Symfony\Component\HttpFoundation\File\UploadedFile;
-use EasyCorp\Bundle\EasyAdminBundle\Field\DateTimeField;
 use EasyCorp\Bundle\EasyAdminBundle\Field\TextareaField;
+use EasyCorp\Bundle\EasyAdminBundle\Field\TextField;
 use EasyCorp\Bundle\EasyAdminBundle\Filter\EntityFilter;
-use EasyCorp\Bundle\EasyAdminBundle\Field\AssociationField;
-use EasyCorp\Bundle\EasyAdminBundle\Controller\AbstractCrudController;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class CommentCrudController extends AbstractCrudController
 {
@@ -30,7 +30,7 @@ class CommentCrudController extends AbstractCrudController
             ->setSearchFields(['author', 'text', 'email'])
             ->setDefaultSort(['createdAt' => 'DESC']);
     }
-    
+
     public function configureFilters(Filters $filters): Filters
     {
         return $filters
@@ -46,7 +46,7 @@ class CommentCrudController extends AbstractCrudController
             ->hideOnIndex();
         yield ImageField::new('photoFilename')
             ->setUploadDir('/public/uploads/photos')
-            ->setUploadedFileNamePattern(fn(UploadedFile $photo) => Comment::setFilename($photo))
+            ->setUploadedFileNamePattern(fn (UploadedFile $photo) => Comment::setFilename($photo))
             ->setBasePath('/uploads/photos')
             ->setLabel('Photo');
         yield DateTimeField::new('createdAt')

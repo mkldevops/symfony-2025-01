@@ -3,12 +3,12 @@
 namespace App\Entity;
 
 use App\Entity\Trait\Timestampable;
-use Doctrine\ORM\Mapping as ORM;
 use App\Repository\ConferenceRepository;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\String\Slugger\SluggerInterface;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
+use Symfony\Component\String\Slugger\SluggerInterface;
 
 #[ORM\Entity(repositoryClass: ConferenceRepository::class)]
 #[ORM\HasLifecycleCallbacks]
@@ -16,7 +16,7 @@ use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 class Conference implements \Stringable
 {
     use Timestampable;
-    
+
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
@@ -55,7 +55,14 @@ class Conference implements \Stringable
         return $this->id;
     }
 
-    public function computeSlug(SluggerInterface $slugger) : static
+    public function setId(int $id): static
+    {
+        $this->id = $id;
+
+        return $this;
+    }
+
+    public function computeSlug(SluggerInterface $slugger): static
     {
         if (!$this->slug || '-' === $this->slug) {
             $this->slug = (string) $slugger->slug((string) $this)->lower();

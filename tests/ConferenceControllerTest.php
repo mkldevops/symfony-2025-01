@@ -15,7 +15,7 @@ class ConferenceControllerTest extends WebTestCase
         static::assertSelectorTextContains('h1', 'Conference Guestbook');
     }
 
-    public function testCommentSubmission() : void
+    public function testCommentSubmission(): void
     {
         $client = static::createClient();
         $client->request('GET', '/conference/amsterdam-2019');
@@ -26,13 +26,13 @@ class ConferenceControllerTest extends WebTestCase
             'comment_form[email]' => 'me@automat.ed',
             'comment_form[photo]' => dirname(__DIR__, 2).'/public/images/under-construction.gif',
         ]);
-        
+
         static::assertResponseRedirects();
         $client->followRedirect();
         static::assertSelectorExists('p:contains("There are 2 comments")');
     }
 
-    public function testConferencePage() : void
+    public function testConferencePage(): void
     {
         $client = static::createClient();
         $crawler = $client->request('GET', '/');
@@ -40,7 +40,7 @@ class ConferenceControllerTest extends WebTestCase
         static::assertCount(2, $crawler->filter('h3'));
 
         $client->clickLink('View');
-        
+
         static::assertPageTitleContains('Amsterdam');
         static::assertResponseIsSuccessful();
 
