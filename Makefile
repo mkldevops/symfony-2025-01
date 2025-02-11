@@ -21,4 +21,10 @@ quality: phpstan php-cs-fixer tests
 connect-db:
 	docker compose exec database psql app app
 
+cc:
+	APP_ENV=dev symfony console cache:clear
+
+async:
+	symfony run -d --watch=config,src,templates,vendor symfony console messenger:consume async
+
 .PHONY: tests
