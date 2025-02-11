@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+{% block title %}Revue de commenataire{% endblock %}
+{% block body %}
+  <h2>Statut du commentaire</h2>
+  
+  <p>
+    <strong>Transition appliquée:</strong> {{ transition }}<br />
+    <strong>Nouveau statut:</strong> {{ comment.stateAsString }}
+  </p>
+
+  <div class="comment-details">
+    <p>
+      <strong>Auteur:</strong> {{ comment.author }}<br />
+      <strong>Email:</strong> {{ comment.email }}<br />
+      <strong>Texte:</strong><br />
+      {{ comment.text }}
+    </p>
+  </div>
+
+  <div class="actions">
+    <a href="{{ path('admin') }}" class="btn">Retour à l'administration</a>
+  </div>
+{% endblock %}
