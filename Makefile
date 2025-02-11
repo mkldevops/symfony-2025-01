@@ -18,4 +18,7 @@ php-cs-fixer-dry-run:
 
 quality: phpstan php-cs-fixer tests
 
+connect-db:
+	docker compose exec database psql app app
+
 .PHONY: tests

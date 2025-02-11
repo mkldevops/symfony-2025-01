@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\Comment;
 use App\Form\CommentFormType;
+use App\Message\CommentMessage;
 use App\Repository\CommentRepository;
 use App\Repository\ConferenceRepository;
 use App\SpamChecker;
@@ -13,13 +14,12 @@ use Symfony\Component\DependencyInjection\Attribute\Autowire;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Messenger\MessageBusInterface;
 use Symfony\Component\Routing\Attribute\Route;
 
 class ConferenceController extends AbstractController
 {
-    public function __construct(private readonly EntityManagerInterface $entityManager)
-    {
-    }
+    public function __construct(private readonly EntityManagerInterface $entityManager) {}
 
     #[Route('/', name: 'homepage')]
     public function index(ConferenceRepository $conferenceRepository): Response
@@ -37,7 +37,7 @@ class ConferenceController extends AbstractController
         ConferenceRepository $conferenceRepository,
         #[Autowire('%photo_dir%')]
         string $photoDir,
-        SpamChecker $spamChecker,
+        MessageBusInterface $bus
     ): Response {
         $conference = $conferenceRepository->findOneBy(['slug' => $slug]);
         $comment = new Comment();
@@ -48,7 +48,7 @@ class ConferenceController extends AbstractController
             $comment->setConference($conference);
 
             if ($photo = $form['photo']->getData()) {
-                $filename = bin2hex(random_bytes(6)).'.'.$photo->guessExtension();
+                $filename = bin2hex(random_bytes(6)) . '.' . $photo->guessExtension();
                 try {
                     $photo->move($photoDir, $filename);
                 } catch (FileException $e) {
@@ -58,6 +58,7 @@ class ConferenceController extends AbstractController
             }
 
             $this->entityManager->persist($comment);
+            $this->entityManager->flush();
 
             $context = [
                 'user_ip' => $request->getClientIp(),
@@ -66,9 +67,7 @@ class ConferenceController extends AbstractController
                 'permalink' => $request->getUri(),
             ];
 
-            if (2 === $spamChecker->getSpamScore($comment, $context)) {
-                throw new \RuntimeException('Blatant spam, go away!');
-            }
+            $bus->dispatch(new CommentMessage($comment->getId(), $context));
 
             $this->entityManager->flush();
 
